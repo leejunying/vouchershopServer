@@ -1,3 +1,4 @@
+const voucher = require("../models/voucher");
 const Voucher = require("../models/voucher");
 
 const GenerateSlug = async (name, key) => {
@@ -21,13 +22,20 @@ const GenerateSlug = async (name, key) => {
 const voucherController = {
   newVoucher: async (req, res) => {
     try {
-      const newVoucher = req.body;
+      let newVoucher = req.body;
 
+      console.log("body", newVoucher);
       let slug = await GenerateSlug(newVoucher["title"], newVoucher["key"]);
+
+      console.log("slug", slug);
 
       newVoucher.slug = slug;
 
+      console.log("new", newVoucher);
+
       const voucher = await Voucher.create(newVoucher);
+
+      console.log(voucher);
       return res.status(200).json({ msg: "Add new succes", data: voucher });
     } catch (err) {
       return res.status(500).json(err);
@@ -93,6 +101,51 @@ const voucherController = {
       }
     } catch (err) {
       res.status(500).json(err);
+    }
+  },
+
+  //Demo top 4 item  any category
+
+  getTopVoucher: async (req, res) => {
+    try {
+      const Top = [];
+
+      // //Exp1
+
+      Top.push({
+        title: "Combo Vouchers",
+        items: await Voucher.find({ key: "CV" })
+          .sort({ createdAt: -1 })
+          .limit(4),
+      });
+      Top.push({
+        title: "Dịch Vụ Hàng Không",
+        items: await Voucher.find({ key: "HK" })
+          .sort({ createdAt: -1 })
+          .limit(4),
+      });
+      Top.push({
+        title: "Dịch Vụ Nghỉ Dưỡng",
+        items: await Voucher.find({ key: "ND" })
+          .sort({ createdAt: -1 })
+          .limit(4),
+      });
+      Top.push({
+        title: "Dịch Vụ Liên Kết",
+        items: await Voucher.find({ key: "LK" })
+          .sort({ createdAt: -1 })
+          .limit(4),
+      });
+      Top.push({
+        title: "Dịch Vụ Golf",
+        items: await Voucher.find({ key: "G" })
+          .sort({ createdAt: -1 })
+          .limit(4),
+      });
+
+      return res.status(200).json(Top);
+    } catch (err) {
+      return res.status(500).json(err);
     }
   },
 

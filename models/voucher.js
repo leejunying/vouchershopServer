@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
 const Voucherchema = new mongoose.Schema(
   {
@@ -16,7 +17,7 @@ const Voucherchema = new mongoose.Schema(
       require: true,
     },
     discount: {
-      typeof: Number,
+      type: Number,
       default: 0,
     },
     status: {
@@ -26,9 +27,7 @@ const Voucherchema = new mongoose.Schema(
     img_url: {
       type: String,
     },
-    category: {
-      type: Array,
-    },
+    categorys: [{ type: Schema.Types.ObjectId, ref: "categorys" }],
     stock: {
       type: Number,
       default: 0,

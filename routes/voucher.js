@@ -10,9 +10,9 @@ const {
 router
   .route("/")
   .post(voucherController.newVoucher)
-  .get(voucherController.getAllVoucher);
-
-router.route("/page").get(voucherController.getVoucherByPage);
+  // .get(voucherController.getAllVoucher);
+  .get(voucherController.getVoucherByPage);
+router.route("/top").get(voucherController.getTopVoucher);
 
 router
   .route("/:id")
