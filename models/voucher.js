@@ -33,7 +33,7 @@ const Voucherchema = new mongoose.Schema(
       default: 0,
     },
     price_options: {
-      type: Array,
+      type: Object,
     },
   },
   { timestamps: true },

@@ -75,9 +75,8 @@ const authController = {
           path: "/",
           sameSite: "strict",
         });
-        res.setHeader("token", accessToken);
-        const headers = res.getHeaders();
-        res.header("Authorization", `Bearer ${accessToken}`).send();
+
+        // res.header("Authorization", `Bearer ${accessToken}`).send();
 
         // save all - password
 

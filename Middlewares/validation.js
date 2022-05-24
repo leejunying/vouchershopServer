@@ -69,9 +69,13 @@ const validator = {
       discount: Joi.string().default(0),
       status: Joi.string().max(20).required(),
       img_url: Joi.string(),
-      category: Joi.array().required(),
+      categorys: Joi.array().required(),
       stock: Joi.number(),
       price_options: Joi.array().required(),
+    }),
+    categorysSchema: Joi.object().keys({
+      key: Joi.string().max(3).required(),
+      title: Joi.string().min(5).max(50).required(),
     }),
   },
 };

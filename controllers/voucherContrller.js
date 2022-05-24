@@ -1,6 +1,5 @@
-const voucher = require("../models/voucher");
 const Voucher = require("../models/voucher");
-
+const Category = require("../models/categorys");
 const GenerateSlug = async (name, key) => {
   let voucherdata = await Voucher.find({ title: name });
 
@@ -24,20 +23,27 @@ const voucherController = {
     try {
       let newVoucher = req.body;
 
-      console.log("body", newVoucher);
       let slug = await GenerateSlug(newVoucher["title"], newVoucher["key"]);
 
-      console.log("slug", slug);
+      // console.log("slug", slug);
 
       newVoucher.slug = slug;
-
-      console.log("new", newVoucher);
 
       const voucher = await Voucher.create(newVoucher);
 
       console.log(voucher);
+
+      voucher.categorys.map(async (cateid) => {
+        let pushvou = await Category.findByIdAndUpdate(cateid, {
+          $push: { vouchers: voucher["_id"] },
+        });
+        console.log("Ok");
+      });
+
       return res.status(200).json({ msg: "Add new succes", data: voucher });
     } catch (err) {
+      console.log(err);
+
       return res.status(500).json(err);
     }
   },
@@ -46,6 +52,9 @@ const voucherController = {
       const { id } = req.params;
       const voucher = req.body;
       const foundVoucher = await Voucher.findByIdAndUpdate(id, voucher);
+
+      console.log(foundVoucher);
+
       return res.status(200).json({ success: true, foundVoucher });
     } catch (err) {
       return res.status(500).json(err);
@@ -81,8 +90,11 @@ const voucherController = {
   getVoucherByPage: async (req, res) => {
     try {
       const page = req.query["page"];
+      const categoryid = req.query["category"];
 
-      let count = await Voucher.find().countDocuments(); // counter page
+      let count = await Voucher.find({
+        categorys: categoryid,
+      }).countDocuments(); // counter page
       let perpage = 5;
       let total = Math.ceil(count / perpage);
       let Page = page * 1 || 0;
@@ -99,6 +111,17 @@ const voucherController = {
           totalpage: total,
         });
       }
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
+
+  getVoucherBySlug: async (req, res) => {
+    try {
+      let data = await Voucher.findOne(req.params)
+        .populate("categorys")
+        .then((p) => res.status(200).json(p))
+        .catch((error) => console.log(error));
     } catch (err) {
       res.status(500).json(err);
     }

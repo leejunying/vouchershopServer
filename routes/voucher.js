@@ -13,10 +13,11 @@ router
   // .get(voucherController.getAllVoucher);
   .get(voucherController.getVoucherByPage);
 router.route("/top").get(voucherController.getTopVoucher);
-
+router.route("/find/:slug").get(voucherController.getVoucherBySlug);
 router
   .route("/:id")
   .get(voucherController.getVoucherByID)
   .put(voucherController.updateVoucher)
   .delete(verifyTokenAndAdmin, voucherController.deleteVoucher);
+
 module.exports = router;

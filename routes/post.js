@@ -1,3 +1,4 @@
+// @ts-nocheck
 const postController = require("../controllers/postController");
 const {
   verifyToken,

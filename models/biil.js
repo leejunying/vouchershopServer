@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const BillSchema = new mongoose.Schema(
   {
     UserID: {
-      type: mongoose.Schema.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
     item: {
