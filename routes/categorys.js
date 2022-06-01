@@ -8,10 +8,16 @@ const {
 } = require("../Middlewares/verifyToken");
 const validator = require("../Middlewares/validation");
 
-router.route("/").get(categorysController.getCategory).post(
-  // verifyTokenAndAdmin,
-  validator.validateBody(validator.schemas.categorysSchema),
-  categorysController.newCategory,
-);
+router
+  .route("/")
+  .get(
+    validator.validateCategoryQuery(validator.schemas.categoryQuerySchema),
+    categorysController.getCategory,
+  )
+  .post(
+    // verifyTokenAndAdmin,
+    validator.validateBody(validator.schemas.categorysSchema),
+    categorysController.newCategory,
+  );
 
 module.exports = router;

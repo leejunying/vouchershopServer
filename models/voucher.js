@@ -39,4 +39,4 @@ const Voucherchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-module.exports = mongoose.model("Vouchers", Voucherchema);
+module.exports = mongoose.model("vouchers", Voucherchema);

@@ -8,6 +8,11 @@ const authController = {
   registerUser: async (req, res) => {
     try {
       const { username, phone, password, email } = req.value.body;
+
+
+        console.log(req.value.body)
+
+
       const salt = await bcrypt.genSalt(10);
       const hashed = await bcrypt.hash(password, salt);
       const beforeInfo = await User.find();
@@ -69,12 +74,12 @@ const authController = {
         const accessToken = authController.generateAccessToken(user);
         const refreshToken = authController.generateRefreshToken(user);
         refreshTokens.push(refreshToken);
-        res.cookie("refreshToken", refreshToken, {
-          httpOnly: true,
-          secure: false,
-          path: "/",
-          sameSite: "strict",
-        });
+        // res.cookie("refreshToken", refreshToken, {
+        //   httpOnly: true,
+        //   secure: false,
+        //   path: "/",
+        //   sameSite: "strict",
+        // });
 
         // res.header("Authorization", `Bearer ${accessToken}`).send();
 
@@ -87,6 +92,8 @@ const authController = {
           accessToken: accessToken,
           refreshToken: refreshToken,
         });
+        
+
       }
     } catch (err) {
       res.status(500).json(err);

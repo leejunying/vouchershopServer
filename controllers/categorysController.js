@@ -36,8 +36,31 @@ const categorysController = {
   },
   getCategory: async (req, res) => {
     try {
-      const voucher = await categorys.find();
-      res.status(200).json(voucher);
+      const page = req.query["page"];
+      const categoryid = req.query["key"];
+
+      const vouchers = await categorys
+        .findOne({ key: categoryid })
+        .populate("vouchers");
+
+      let count = vouchers["vouchers"].length;
+
+      let perpage = 2;
+
+      let total = Math.ceil(count / perpage);
+
+      let list = vouchers["vouchers"];
+
+      list = list.slice((page - 1) * perpage, page * perpage);
+
+      if (page > total) {
+        return res.status(404).json({ msg: "Page not found" });
+      } else {
+        return res.status(200).json({
+          data: list,
+          totalpage: total,
+        });
+      }
     } catch (err) {
       res.status(500).json(err);
     }

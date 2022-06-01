@@ -1,4 +1,6 @@
 const Joi = require("@hapi/joi");
+const categorys = require("../models/categorys");
+const { schema } = require("../models/voucher");
 
 const validator = {
   validateBody: (schema) => {
@@ -24,9 +26,19 @@ const validator = {
       } else {
         if (!req.value) req.value = {};
         if (!req.value["params"]) req.value.params = {};
+
         req.value.params[name] = req.params[name];
         next();
       }
+    };
+  },
+
+  validateCategoryQuery: (schema) => {
+    return (req, res, next) => {
+      const validateQuery = schema.validate(req.query);
+      if (validateQuery.error) {
+        return res.status(400).json(validateQuery.error);
+      } else next();
     };
   },
   schemas: {
@@ -40,24 +52,23 @@ const validator = {
       email: Joi.string().email().required(),
       phone: Joi.string().min(10).max(12).required(),
       password: Joi.string().min(6).required(),
-      avatar: Joi.string(),
       address: Joi.string(),
       isAdmin: Joi.boolean().required(),
     }),
-    userOptionalSchema: Joi.object().keys({
-      username: Joi.string().min(5).max(20),
-      email: Joi.string().email().required(),
-      phone: Joi.string().min(10).max(12),
-      password: Joi.string().min(6),
-      avatar: Joi.string(),
-      address: Joi.string(),
-      isAdmin: Joi.boolean(),
-    }),
+
     userRegisterSchema: Joi.object().keys({
       username: Joi.string().min(5).max(20).required(),
       email: Joi.string().email().required(),
       phone: Joi.string().min(10).max(12).required(),
       password: Joi.string().min(6).required(),
+      address: Joi.string(),
+    }),
+
+    userUpdateSchema: Joi.object().keys({
+      email: Joi.string().email().required(),
+      phone: Joi.string().min(10).max(12).required(),
+      password: Joi.string().min(6).required(),
+      address: Joi.string(),
     }),
     userLoginSchema: Joi.object().keys({
       username: Joi.string().min(5).max(20).required(),
@@ -74,8 +85,13 @@ const validator = {
       price_options: Joi.array().required(),
     }),
     categorysSchema: Joi.object().keys({
-      key: Joi.string().max(3).required(),
+      key: Joi.string().max(5).required(),
       title: Joi.string().min(5).max(50).required(),
+    }),
+
+    categoryQuerySchema: Joi.object().keys({
+      key: Joi.string().min(2).max(5).required(),
+      page: Joi.number().required(),
     }),
   },
 };
