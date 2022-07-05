@@ -7,6 +7,7 @@ const {
   verifyTokenAndUserAuthorization,
 } = require("../Middlewares/verifyToken");
 const validator = require("../Middlewares/validation");
+const categorys = require("../models/categorys");
 
 router
   .route("/")
@@ -19,5 +20,8 @@ router
     validator.validateBody(validator.schemas.categorysSchema),
     categorysController.newCategory,
   );
+
+router.route("/all").get(categorysController.getAll);
+router.route("/:key").get(categorysController.getCategoryID);
 
 module.exports = router;

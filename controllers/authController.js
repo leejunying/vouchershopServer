@@ -7,11 +7,8 @@ let refreshTokens = [];
 const authController = {
   registerUser: async (req, res) => {
     try {
-      const { username, phone, password, email } = req.value.body;
-
-
-        console.log(req.value.body)
-
+      const { username, phone, password, email, firstname, lastname } =
+        req.value.body;
 
       const salt = await bcrypt.genSalt(10);
       const hashed = await bcrypt.hash(password, salt);
@@ -26,17 +23,46 @@ const authController = {
             .json({ msg: "This username is already registered" });
         break;
       }
+
       // Create new user
-      const newUser = await new User({
+      const newUser = {
         phone: phone,
         username: username,
         password: hashed,
+        firstname: firstname,
+        lastname: lastname,
         email: email,
-      });
-      const user = await newUser.save();
-      res.status(200).json(user);
+        address: "",
+      };
+
+      const result = await User.create(newUser);
+
+      res.status(200).json(result);
     } catch (err) {
-      res.status(500).json(err);
+      const errPhone = "Phone number available";
+
+      const errEmail = "Email available";
+
+      const errUsername = "Username available";
+
+      let result = "";
+      let obj = {
+        title: "",
+        message: "",
+      };
+
+      if (err.keyPattern.username == 1) {
+        (obj.title = "username"), (obj.message = errUsername);
+      }
+      if (err.keyPattern.phone == 1) {
+        (obj.title = "phone"), (obj.message = errPhone);
+      }
+
+      if (err.keyPattern.email == 1) {
+        (obj.title = "email"), (obj.message = errEmail);
+      }
+
+      res.status(500).json(obj);
     }
   },
   generateAccessToken: (user) => {
@@ -92,8 +118,6 @@ const authController = {
           accessToken: accessToken,
           refreshToken: refreshToken,
         });
-        
-
       }
     } catch (err) {
       res.status(500).json(err);

@@ -4,6 +4,7 @@ const userSchema = new mongoose.Schema(
   {
     username: {
       type: String,
+      unique: true,
       require: true,
       min: 6,
       max: 20,
@@ -11,13 +12,13 @@ const userSchema = new mongoose.Schema(
     firstname: {
       type: String,
       require: true,
-      min: 10,
+      min: 2,
       max: 20,
     },
     lastname: {
       type: String,
       require: true,
-      min: 15,
+      min: 2,
       max: 50,
     },
 
@@ -28,9 +29,9 @@ const userSchema = new mongoose.Schema(
     },
     phone: {
       type: String,
+      unique: true,
       require: true,
       max: 12,
-      unique: true,
     },
     password: {
       type: String,
@@ -53,9 +54,11 @@ const userSchema = new mongoose.Schema(
     },
     avatar: {
       type: String,
+      default: "",
     },
     address: {
       type: String,
+      default: "",
     },
     isAdmin: {
       type: Boolean,
@@ -65,4 +68,4 @@ const userSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-module.exports = mongoose.model("Users", userSchema);
+module.exports = mongoose.model("users", userSchema);

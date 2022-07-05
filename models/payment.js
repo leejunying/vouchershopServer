@@ -1,12 +1,12 @@
 const mongoose = require("mongoose");
 
-const BillSchema = new mongoose.Schema(
+const PaymentSchema = new mongoose.Schema(
   {
-    UserID: {
+    userid: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
-    item: {
+    purchase_items: {
       type: Array,
     },
 
@@ -14,8 +14,12 @@ const BillSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    ship: {
+      type: String,
+      default: "",
+    },
   },
   { timestamps: true },
 );
 
-module.exports = mongoose.model("Bills", BillSchema);
+module.exports = mongoose.model("payments", PaymentSchema);

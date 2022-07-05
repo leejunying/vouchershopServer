@@ -7,6 +7,7 @@ const validator = {
     return (req, res, next) => {
       const validatorResult = schema.validate(req.body);
 
+      console.log(req.body);
       if (validatorResult.error) {
         return res.status(400).json(validatorResult.error);
       } else {
@@ -41,6 +42,15 @@ const validator = {
       } else next();
     };
   },
+  validateGetVoucherQuery: (schema) => {
+    return (req, res, next) => {
+      const validateQuery = schema.validate(req.query);
+
+      if (validateQuery.error) {
+        return res.status(400).json(validateQuery.error);
+      } else next();
+    };
+  },
   schemas: {
     idSchema: Joi.object().keys({
       param: Joi.string()
@@ -61,7 +71,8 @@ const validator = {
       email: Joi.string().email().required(),
       phone: Joi.string().min(10).max(12).required(),
       password: Joi.string().min(6).required(),
-      address: Joi.string(),
+      firstname: Joi.string().min(2).max(20).required(),
+      lastname: Joi.string().min(2).max(50).required(),
     }),
 
     userUpdateSchema: Joi.object().keys({
@@ -84,6 +95,12 @@ const validator = {
       stock: Joi.number(),
       price_options: Joi.array().required(),
     }),
+
+    voucherGetQurerySchema: Joi.object().keys({
+      categorykey: Joi.string().required(),
+      page: Joi.number().required(),
+    }),
+
     categorysSchema: Joi.object().keys({
       key: Joi.string().max(5).required(),
       title: Joi.string().min(5).max(50).required(),
@@ -92,6 +109,12 @@ const validator = {
     categoryQuerySchema: Joi.object().keys({
       key: Joi.string().min(2).max(5).required(),
       page: Joi.number().required(),
+    }),
+
+    paymentSchema: Joi.object().keys({
+      userid: Joi.string().required(),
+      purchase_items: Joi.array().required(),
+      total: Joi.number().required(),
     }),
   },
 };

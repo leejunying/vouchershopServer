@@ -5,9 +5,8 @@ const Voucherchema = new mongoose.Schema(
   {
     key: {
       type: String,
-      require: true,
+      required: true,
     },
-
     slug: {
       type: String,
       required: true,

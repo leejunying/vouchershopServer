@@ -54,17 +54,14 @@ const voucherController = {
     try {
       let newVoucher = req.body;
 
-      let slug = GenerateSlug(newVoucher["title"], newVoucher["key"]);
-
-      // console.log("slug", slug);
+      let slug = await GenerateSlug(newVoucher["title"], newVoucher["key"]);
 
       newVoucher.slug = slug;
 
       const voucher = await Voucher.create(newVoucher);
 
-      console.log(voucher);
-
       voucher.categorys.map(async (cateid) => {
+        console.log(cateid);
         let pushvou = await Category.findByIdAndUpdate(cateid, {
           $push: { vouchers: voucher["_id"] },
         });
@@ -102,7 +99,8 @@ const voucherController = {
   },
   getAllVoucher: async (req, res) => {
     try {
-      const voucher = await Voucher.find();
+      var voucher = await await Voucher.find().populate("categorys", "title");
+
       res.status(200).json(voucher);
     } catch (err) {
       res.status(500).json(err);
@@ -118,30 +116,52 @@ const voucherController = {
     }
   },
 
+  getVoucherByTitle: async (req, res) => {},
+
   getVoucherByPage: async (req, res) => {
     try {
+      console.log(req.query);
+
       const page = req.query["page"];
-      const categoryid = req.query["category"];
+      const categorykey = req.query["categorykey"];
 
-      let count = await Voucher.find({
-        categorys: categoryid,
-      }).countDocuments(); // counter page
-      let perpage = 5;
-
-      let total = Math.ceil(count / perpage);
+      let voucher = {};
+      let count = 0;
+      let perpage = 10;
+      let total = 0;
       let Page = page * 1 || 0;
 
-      const voucher = await Voucher.find()
-        .skip(perpage * Page - perpage)
-        .limit(perpage);
+      if (categorykey == "all") {
+        count = await Voucher.find().countDocuments();
+        total = Math.ceil(count / perpage);
 
-      if (page > total) {
-        return res.status(404).json({ msg: "Page not found" });
+        voucher = await Voucher.find({})
+          .skip(perpage * Page - perpage)
+          .limit(perpage);
+
+        if (page > total) {
+          return res.status(404).json({ msg: "Page not found" });
+        } else {
+          voucher.totalpage = total;
+
+          return res.status(200).json(voucher);
+        }
       } else {
-        return res.status(200).json({
-          data: voucher,
-          totalpage: total,
-        });
+        count = await Voucher.find({
+          categorys: categorykey,
+        }).countDocuments(); // counter page
+        total = Math.ceil(count / perpage);
+
+        voucher = await Voucher.find({ categorys: categorykey })
+          .skip(perpage * Page - perpage)
+          .limit(perpage);
+
+        if (page > total) {
+          return res.status(404).json({ msg: "Page not found" });
+        } else {
+          voucher.totalpage = total;
+          return res.status(200).json(voucher);
+        }
       }
     } catch (err) {
       res.status(500).json(err);
@@ -175,25 +195,25 @@ const voucherController = {
       });
       Top.push({
         title: "Dịch Vụ Hàng Không",
-        items: await Voucher.find({ key: "HK" })
+        items: await Voucher.find({ key: "DVHK" })
           .sort({ createdAt: -1 })
           .limit(4),
       });
       Top.push({
         title: "Dịch Vụ Nghỉ Dưỡng",
-        items: await Voucher.find({ key: "ND" })
+        items: await Voucher.find({ key: "DVND" })
           .sort({ createdAt: -1 })
           .limit(4),
       });
       Top.push({
         title: "Dịch Vụ Liên Kết",
-        items: await Voucher.find({ key: "LK" })
+        items: await Voucher.find({ key: "DVLK" })
           .sort({ createdAt: -1 })
           .limit(4),
       });
       Top.push({
         title: "Dịch Vụ Golf",
-        items: await Voucher.find({ key: "G" })
+        items: await Voucher.find({ key: "DVG" })
           .sort({ createdAt: -1 })
           .limit(4),
       });

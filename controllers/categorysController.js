@@ -34,32 +34,54 @@ const categorysController = {
       return res.status(500).json(err);
     }
   },
+
+  getCategoryID: async (req, res) => {
+    try {
+      const { key } = req.params;
+
+      const category = await categorys.find({ key: key });
+
+      console.log(category);
+
+      return res.status(200).json(category);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
+
+  getAll: async (req, res) => {
+    try {
+      const data = await categorys.find();
+      return res.status(200).json(data);
+    } catch (err) {
+      return res.stat(500).json(err);
+    }
+  },
+
   getCategory: async (req, res) => {
     try {
       const page = req.query["page"];
       const categoryid = req.query["key"];
 
-      const vouchers = await categorys
+      const Categorys = await categorys
         .findOne({ key: categoryid })
         .populate("vouchers");
 
-      let count = vouchers["vouchers"].length;
+      let count = Categorys["vouchers"].length;
 
-      let perpage = 2;
+      let perpage = 8;
 
       let total = Math.ceil(count / perpage);
 
-      let list = vouchers["vouchers"];
+      let list = Categorys["vouchers"];
 
       list = list.slice((page - 1) * perpage, page * perpage);
 
       if (page > total) {
         return res.status(404).json({ msg: "Page not found" });
       } else {
-        return res.status(200).json({
-          data: list,
-          totalpage: total,
-        });
+        list.totalpage = total;
+        return res.status(200).json(list);
       }
     } catch (err) {
       res.status(500).json(err);

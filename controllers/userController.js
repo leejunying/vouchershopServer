@@ -4,40 +4,20 @@ const bcrypt = require("bcrypt");
 const userController = {
   newUser: async (req, res) => {
     try {
-      const { username, phone, password, isAdmin } = req.value.body;
+      const { username, phone, password, isAdmin, email } = req.value.body;
       const salt = await bcrypt.genSalt(10);
       const hashed = await bcrypt.hash(password, salt);
-      const beforeInfo = await User.find();
-      let Phone = [];
-      let UserName = [];
-      beforeInfo.map((item) => {
-        Phone.push(item.phone);
-        UserName.push(item.username);
-      });
-      for (var i = 0; i < UserName.length; i++) {
-        for (var j = 0; j < Phone.length; j++) {
-          if (UserName[i] == username) {
-            return res
-              .status(404)
-              .json({ msg: "This UserName is already registered" });
-          } else if (Phone[j] == phone) {
-            return res
-              .status(404)
-              .json({ msg: "This PhoneNumber is already registered" });
-          }
-        }
-      }
-      const newUser = await new User({
+
+      const newUser = {
         phone: phone,
         username: username,
         password: hashed,
         isAdmin: isAdmin,
-      });
-      await newUser.save();
-      return res.status(201).json({ user: newUser });
-    } catch (err) {
-      res.status(500).json({});
-    }
+        email: email,
+      };
+
+      console.log(newUser);
+    } catch (err) {}
   },
   getAllUser: async (req, res) => {
     try {
@@ -80,7 +60,6 @@ const userController = {
       const foundUser = await User.findByIdAndUpdate(id, newUser);
       return res.status(200).json({ success: true });
     } catch (err) {
-      console.log(err);
       return res.status(500).json({ error: err });
     }
   },
