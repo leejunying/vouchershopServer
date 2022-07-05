@@ -16,12 +16,23 @@ const userController = {
         email: email,
       };
 
-      console.log(newUser);
-    } catch (err) {}
+     } catch (err) {
+      const errPhone = "Phone number available";
+
+      const errEmail = "Email available";
+
+      const errUsername = "Username available";
+
+      let result = "";
+      if (err.keyPattern.phone != undefined) result += errPhone;
+      if (err.keyPattern.email != undefined) result += errEmail;
+      if (err.keyPattern.username != undefined) result += errUsername;
+      
+     }
   },
   getAllUser: async (req, res) => {
     try {
-      const user = await User.find();
+      const user = await User.find().populate("vouchers");
       res.status(200).json(user);
     } catch (err) {
       res.status(500).json(err);
