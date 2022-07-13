@@ -60,15 +60,9 @@ const voucherController = {
 
       const voucher = await Voucher.create(newVoucher);
 
-      voucher.categorys.map(async (cateid) => {
-        console.log(cateid);
-        let pushvou = await Category.findByIdAndUpdate(cateid, {
-          $push: { vouchers: voucher["_id"] },
-        });
-        console.log("Ok");
-      });
+      console.log(voucher);
 
-      return res.status(200).json({ msg: "Add new succes", data: voucher });
+      return res.status(200).json({ msg: "Add new succes" });
     } catch (err) {
       console.log(err);
 
@@ -77,9 +71,11 @@ const voucherController = {
   },
   updateVoucher: async (req, res) => {
     try {
-      const { id } = req.params;
       const voucher = req.body;
-      const foundVoucher = await Voucher.findByIdAndUpdate(id, voucher);
+
+      console.log(voucher);
+
+      const foundVoucher = await Voucher.findByIdAndUpdate(voucher.id, voucher);
 
       console.log(foundVoucher);
 
@@ -99,7 +95,9 @@ const voucherController = {
   },
   getAllVoucher: async (req, res) => {
     try {
-      var voucher = await await Voucher.find().populate("categorys", "title");
+      var voucher = await await Voucher.find()
+        .populate("categorys", "title")
+        .sort({ createdAt: -1 });
 
       res.status(200).json(voucher);
     } catch (err) {
@@ -116,14 +114,10 @@ const voucherController = {
     }
   },
 
-  getVoucherByTitle: async (req, res) => {},
-
   getVoucherByPage: async (req, res) => {
     try {
-      console.log(req.query);
-
       const page = req.query["page"];
-      const categorykey = req.query["categorykey"];
+      const categorykey = req.query["key"];
 
       let voucher = {};
       let count = 0;

@@ -12,7 +12,6 @@ const Categoryschema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    vouchers: [{ type: Schema.Types.ObjectId, ref: "vouchers" }],
   },
   { timestamps: true },
 );
