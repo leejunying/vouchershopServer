@@ -1,11 +1,5 @@
 // @ts-nocheck
 
-let A =[1,2,3]
-
-Array(3).map()
-
-a.map()
-
 const categorysController = require("../controllers/categorysController");
 const router = require("express-promise-router")();
 const {
