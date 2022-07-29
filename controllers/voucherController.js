@@ -86,7 +86,8 @@ const voucherController = {
   },
   deleteVoucher: async (req, res) => {
     try {
-      const { id } = req.params;
+      const { id } = req.body;
+      console.log(req.body);
       await Voucher.findByIdAndDelete(id);
       return res.status(200).json("Voucher deleted");
     } catch (err) {
@@ -222,6 +223,19 @@ const voucherController = {
   getVoucherByDate: async (req, res) => {
     try {
     } catch (err) {}
+  },
+
+  getSearchVoucher: async (req, res) => {
+    try {
+      console.log(req.params);
+      const { text } = req.params;
+      const found = await Voucher.find({
+        title: { $regex: `.*` + text + `.*` },
+      }).limit(5);
+      return res.status(200).json(found);
+    } catch (err) {
+      return res.status(200).json(err);
+    }
   },
 };
 module.exports = voucherController;

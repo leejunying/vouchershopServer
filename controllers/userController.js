@@ -15,8 +15,7 @@ const userController = {
         isAdmin: isAdmin,
         email: email,
       };
-
-     } catch (err) {
+    } catch (err) {
       const errPhone = "Phone number available";
 
       const errEmail = "Email available";
@@ -27,12 +26,11 @@ const userController = {
       if (err.keyPattern.phone != undefined) result += errPhone;
       if (err.keyPattern.email != undefined) result += errEmail;
       if (err.keyPattern.username != undefined) result += errUsername;
-      
-     }
+    }
   },
   getAllUser: async (req, res) => {
     try {
-      const user = await User.find().populate("vouchers");
+      const user = await User.find();
       res.status(200).json(user);
     } catch (err) {
       res.status(500).json(err);

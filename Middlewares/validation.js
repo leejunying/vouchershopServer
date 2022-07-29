@@ -101,6 +101,12 @@ const validator = {
       page: Joi.number().required(),
     }),
 
+    detailpostsSchema: Joi.object().keys({
+      voucherid: Joi.string().required(),
+      type: Joi.string().required(),
+      content: Joi.string().required(),
+    }),
+
     categorysSchema: Joi.object().keys({
       key: Joi.string().max(5).required(),
       title: Joi.string().min(5).max(50).required(),

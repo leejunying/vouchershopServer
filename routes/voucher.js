@@ -1,5 +1,5 @@
 // @ts-nocheck
-const voucherController = require("../controllers/voucherContrller");
+const voucherController = require("../controllers/voucherController");
 const router = require("express-promise-router")();
 const validator = require("../Middlewares/validation");
 const {
@@ -18,5 +18,6 @@ router
 router.route("/top").get(voucherController.getTopVoucher);
 router.route("/find/:slug").get(voucherController.getVoucherBySlug);
 router.route("/filter").get(voucherController.getVoucherByPage);
+router.route("/search/:text").get(voucherController.getSearchVoucher);
 
 module.exports = router;
