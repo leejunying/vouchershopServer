@@ -14,11 +14,7 @@ router
     validator.validateBody(validator.schemas.detailpostsSchema),
     detailpostsController.create,
   )
-  .put(
-    verifyTokenAndAdmin,
-    validator.validateBody(validator.schemas.detailpostsSchema),
-    detailpostsController.update,
-  )
+  .put(verifyTokenAndAdmin, detailpostsController.update)
   .delete(verifyTokenAndAdmin, detailpostsController.delete);
 
 module.exports = router;

@@ -12,10 +12,15 @@ const detailpostController = {
   },
   update: async (req, res) => {
     try {
-      const { detailpostobj } = req.body;
+      const detailputobj = req.body;
+      console.log(detailputobj);
+
       const foundandupdate = await Detailposts.findByIdAndUpdate(
-        detailpostobj._id,
-        detailpostobj,
+        detailputobj.id,
+        {
+          type: detailputobj.type,
+          content: detailputobj.content,
+        },
       );
       return res.status(200).json({ success: true, foundandupdate });
     } catch (err) {

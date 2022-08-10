@@ -120,6 +120,8 @@ const voucherController = {
       const page = req.query["page"];
       const categorykey = req.query["key"];
 
+      console.log(page, categorykey);
+
       let voucher = {};
       let count = 0;
       let perpage = 10;
@@ -143,11 +145,11 @@ const voucherController = {
         }
       } else {
         count = await Voucher.find({
-          categorys: categorykey,
+          key: categorykey,
         }).countDocuments(); // counter page
         total = Math.ceil(count / perpage);
 
-        voucher = await Voucher.find({ categorys: categorykey })
+        voucher = await Voucher.find({ key: categorykey })
           .skip(perpage * Page - perpage)
           .limit(perpage);
 
@@ -227,11 +229,12 @@ const voucherController = {
 
   getSearchVoucher: async (req, res) => {
     try {
-      console.log(req.params);
       const { text } = req.params;
+      console.log(text);
       const found = await Voucher.find({
-        title: { $regex: `.*` + text + `.*` },
+        title: { $regex: `.*` + text + `.*`, $options: "i" },
       }).limit(5);
+      console.log(found);
       return res.status(200).json(found);
     } catch (err) {
       return res.status(200).json(err);
