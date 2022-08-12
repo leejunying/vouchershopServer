@@ -3,7 +3,9 @@ const Post = require("../models/post");
 const postController = {
   getAllPost: async (req, res) => {
     try {
-      const posts = await Post.find().populate("categoryid");
+      const posts = await Post.find()
+        .populate("categoryid")
+        .sort({ createdAt: -1 });
 
       return res.status(200).json(posts);
     } catch (err) {

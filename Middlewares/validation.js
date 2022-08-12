@@ -7,7 +7,7 @@ const validator = {
     return (req, res, next) => {
       const validatorResult = schema.validate(req.body);
 
-      console.log(req.body);
+      console.log("validator", req.body);
       if (validatorResult.error) {
         return res.status(400).json(validatorResult.error);
       } else {
@@ -121,6 +121,9 @@ const validator = {
       userid: Joi.string().required(),
       purchase_items: Joi.array().required(),
       total: Joi.number().required(),
+      status: Joi.string().required(),
+      shipaddress: Joi.string().required(),
+      contactphone: Joi.string().required(),
     }),
   },
 };

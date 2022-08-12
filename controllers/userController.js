@@ -31,6 +31,7 @@ const userController = {
   getAllUser: async (req, res) => {
     try {
       const user = await User.find();
+      console.log(user);
       res.status(200).json(user);
     } catch (err) {
       res.status(500).json(err);
@@ -48,34 +49,29 @@ const userController = {
   },
   updateUser: async (req, res) => {
     try {
-      const { id } = req.value.params;
-      const { username, phone, avatar, address, isAdmin } = req.value.body;
-      const beforeInfo = await User.findById(id);
-      if (username !== beforeInfo.username) {
-        const userName = await User.findOne({ username });
-        if (userName) {
-          return res
-            .status(404)
-            .json({ msg: "This username is already registered" });
-        }
-      }
-      const newUser = {
-        username,
-        phone,
-        avatar,
-        address,
-        isAdmin,
-      };
-      const foundUser = await User.findByIdAndUpdate(id, newUser);
-      return res.status(200).json({ success: true });
+      // const {_id,
+      //   username,
+      //   email,
+      //   phone,
+      //   password,
+      //   firstname,
+      //   lastname} = req.body
+      const updateData = req.body;
+      const updateUser = await User.findByIdAndUpdate(
+        updateData._id,
+        updateData,
+      );
+      res.status(200).json(updateUser);
     } catch (err) {
-      return res.status(500).json({ error: err });
+      res.status(500).json({ error: err });
     }
   },
   deleteUser: async (req, res) => {
     try {
-      const { id } = req.value.params;
+      const { id } = req.body;
+
       await User.findByIdAndDelete(id);
+      console.log(id);
       res.status(200).json("User deleted");
     } catch (err) {
       res.status(500).json(err);
