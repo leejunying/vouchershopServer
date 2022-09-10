@@ -19,6 +19,17 @@ const Voucherchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    limitedtime: {
+      type: Date,
+    },
+    detailcontent: {
+      type: String,
+      default: "",
+    },
+    policycontent: {
+      type: String,
+      default: "",
+    },
     status: {
       type: String,
       require: true,

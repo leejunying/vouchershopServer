@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+const Schema = mongoose.Schema;
 const userSchema = new mongoose.Schema(
   {
     username: {
@@ -39,19 +39,7 @@ const userSchema = new mongoose.Schema(
       max: 20,
       required: true,
     },
-    auhtGoogleID: {
-      type: String,
-      default: null,
-    },
-    auhtFacebookID: {
-      type: String,
-      default: null,
-    },
-    authType: {
-      type: String,
-      enum: ["local", "google", "facebook"],
-      default: "local",
-    },
+
     avatar: {
       type: String,
       default: "",
@@ -64,6 +52,7 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    paymentid: [{ type: Schema.Types.ObjectId, ref: "payments" }],
   },
   { timestamps: true },
 );

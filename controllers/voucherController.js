@@ -1,5 +1,4 @@
 const Voucher = require("../models/voucher");
-const Category = require("../models/categorys");
 
 function to_slug(str) {
   // Chuyển hết sang chữ thường
@@ -53,6 +52,7 @@ const voucherController = {
   newVoucher: async (req, res) => {
     try {
       let newVoucher = req.body;
+      console.log(newVoucher);
 
       let slug = await GenerateSlug(newVoucher["title"], newVoucher["key"]);
 
@@ -96,11 +96,25 @@ const voucherController = {
   },
   getAllVoucher: async (req, res) => {
     try {
-      var voucher = await await Voucher.find()
+      const page = req.query.page;
+
+      console.log(page);
+
+      let count = 0;
+      let perpage = 10;
+      let total = 0;
+      let Page = page * 1 || 0;
+
+      count = await Voucher.find().countDocuments();
+      total = Math.ceil(count / perpage);
+
+      let voucher = await Voucher.find()
         .populate("categorys", "title")
+        .skip(perpage * Page - perpage)
+        .limit(perpage)
         .sort({ createdAt: -1 });
 
-      res.status(200).json(voucher);
+      res.status(200).json({ voucher: voucher, totalPage: total });
     } catch (err) {
       res.status(500).json(err);
     }
@@ -128,21 +142,17 @@ const voucherController = {
       let total = 0;
       let Page = page * 1 || 0;
 
-      if (categorykey == "all") {
-        count = await Voucher.find().countDocuments();
+      if (categorykey == "SALE") {
+        count = await Voucher.find({
+          status: categorykey,
+        }).countDocuments(); // counter page
         total = Math.ceil(count / perpage);
 
-        voucher = await Voucher.find({})
+        voucher = await Voucher.find({ status: categorykey })
           .skip(perpage * Page - perpage)
           .limit(perpage);
 
-        if (page > total) {
-          return res.status(404).json({ msg: "Page not found" });
-        } else {
-          voucher.totalpage = total;
-
-          return res.status(200).json(voucher);
-        }
+        return res.status(200).json({ data: voucher, totalPage: total });
       } else {
         count = await Voucher.find({
           key: categorykey,
@@ -153,12 +163,7 @@ const voucherController = {
           .skip(perpage * Page - perpage)
           .limit(perpage);
 
-        if (page > total) {
-          return res.status(404).json({ msg: "Page not found" });
-        } else {
-          voucher.totalpage = total;
-          return res.status(200).json(voucher);
-        }
+        return res.status(200).json({ data: voucher, totalPage: total });
       }
     } catch (err) {
       res.status(500).json(err);
@@ -173,6 +178,16 @@ const voucherController = {
         .catch((error) => res.status(400).json(error));
     } catch (err) {
       res.status(500).json(err);
+    }
+  },
+
+  getSliderVoucher: async (req, res) => {
+    try {
+      let vouchers = await Voucher.find().sort({ createdAt: -1 }).limit(4);
+
+      return res.status(200).json(vouchers);
+    } catch (err) {
+      return res.status(500).json(err);
     }
   },
 

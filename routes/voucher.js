@@ -15,6 +15,7 @@ router
   .put(verifyTokenAndAdmin, voucherController.updateVoucher)
   .delete(verifyTokenAndAdmin, voucherController.deleteVoucher);
 
+router.route("/slide").get(voucherController.getSliderVoucher);
 router.route("/top").get(voucherController.getTopVoucher);
 router.route("/find/:slug").get(voucherController.getVoucherBySlug);
 router.route("/filter").get(voucherController.getVoucherByPage);

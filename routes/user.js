@@ -1,6 +1,9 @@
 const userController = require("../controllers/userController");
 const router = require("express-promise-router")();
-const { verifyTokenAndAdmin } = require("../Middlewares/verifyToken");
+const {
+  verifyTokenAndAdmin,
+  verifyToken,
+} = require("../Middlewares/verifyToken");
 const validator = require("../Middlewares/validation");
 
 router
@@ -11,6 +14,8 @@ router
     userController.newUser,
   )
   .delete(verifyTokenAndAdmin, userController.deleteUser)
-  .put(verifyTokenAndAdmin, userController.updateUser);
+  .put(verifyToken, userController.updateUser);
+
+router.route("/password").put(verifyToken, userController.updatePassword);
 
 module.exports = router;

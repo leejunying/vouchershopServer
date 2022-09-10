@@ -4,7 +4,9 @@ const detailpostController = {
   create: async (req, res) => {
     try {
       let newPost = req.body;
+
       const post = await Detailposts.create(newPost);
+      console.log(post);
       return res.status(200).json({ msg: "Add new succes" });
     } catch (err) {
       return res.status(500).json(err);

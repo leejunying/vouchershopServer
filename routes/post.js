@@ -11,5 +11,6 @@ router
   .delete(verifyTokenAndAdmin, postController.deletePost);
 
 router.route("/find").get(postController.getPostbyID);
+router.route("/top").get(postController.getTopPost);
 
 module.exports = router;

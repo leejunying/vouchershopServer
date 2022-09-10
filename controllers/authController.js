@@ -88,7 +88,11 @@ const authController = {
   loginUser: async (req, res) => {
     try {
       const { username, password } = req.value.body;
-      const user = await User.findOne({ username: username });
+      const user = await User.findOne({ username: username }).populate(
+        "paymentid",
+      );
+
+      console.log(user);
       if (!user) {
         return res.status(404).json("Incorrect username");
       }

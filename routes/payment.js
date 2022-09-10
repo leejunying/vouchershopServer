@@ -18,4 +18,6 @@ router
   )
   .put(verifyTokenAndAdmin, paymentController.update)
   .delete(verifyTokenAndAdmin, paymentController.delete);
+
+router.route("/count").get(paymentController.countPayMent);
 module.exports = router;
