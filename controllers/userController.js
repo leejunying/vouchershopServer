@@ -54,8 +54,8 @@ const userController = {
 
   getUserbyID: async (req, res) => {
     try {
-      const { id } = req.value.params;
-      const user = await User.findById(id);
+      const { id } = req.query;
+      const user = await User.findById(id).populate("paymentid");
       res.status(200).json(user);
     } catch (err) {
       res.status(500).json(err);

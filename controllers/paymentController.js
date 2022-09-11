@@ -113,7 +113,7 @@ const billController = {
   delete: async (req, res) => {
     try {
       const { id } = req.body;
-      await Payment.findByIdAndDelete(id);
+      await Payment.findByIdAndUpdate(id, { status: "Delete" });
       return res.status(200).json("Bill delete");
     } catch (err) {
       return res.status(500).json(err);

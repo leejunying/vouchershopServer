@@ -131,10 +131,11 @@ const voucherController = {
 
   getVoucherByPage: async (req, res) => {
     try {
-      const page = req.query["page"];
-      const categorykey = req.query["key"];
+      const tag = req.query.tag;
+      const page = req.query.page;
+      const categorykey = req.query.key;
 
-      console.log(page, categorykey);
+      console.log(tag, page, categorykey);
 
       let voucher = {};
       let count = 0;
@@ -142,28 +143,49 @@ const voucherController = {
       let total = 0;
       let Page = page * 1 || 0;
 
-      if (categorykey == "SALE") {
-        count = await Voucher.find({
-          status: categorykey,
-        }).countDocuments(); // counter page
+      if (categorykey) {
+        if (categorykey == "SALE") {
+          count = await Voucher.find({
+            status: categorykey,
+          }).countDocuments(); // counter page
+          total = Math.ceil(count / perpage);
+
+          voucher = await Voucher.find({ status: categorykey })
+            .skip(perpage * Page - perpage)
+            .limit(perpage);
+
+          return res.status(200).json({ data: voucher, totalPage: total });
+        } else {
+          count = await Voucher.find({
+            key: categorykey,
+          }).countDocuments(); // counter page
+          total = Math.ceil(count / perpage);
+
+          voucher = await Voucher.find({ key: categorykey })
+            .skip(perpage * Page - perpage)
+            .limit(perpage);
+
+          return res.status(200).json({ data: voucher, totalPage: total });
+        }
+      }
+      if (tag) {
+        let all = await Voucher.find().populate("categorys");
+        let filterarr = [];
+        var newall = all.map((item) => {
+          item.categorys.map((cate) => {
+            console.log(cate.key, tag);
+            if (JSON.stringify(cate.key).includes(tag) == true) {
+              filterarr.push(item);
+            }
+          });
+        });
+
+        count = filterarr.length;
         total = Math.ceil(count / perpage);
 
-        voucher = await Voucher.find({ status: categorykey })
-          .skip(perpage * Page - perpage)
-          .limit(perpage);
-
-        return res.status(200).json({ data: voucher, totalPage: total });
+        return res.status(200).json({ data: filterarr, totalPage: total });
       } else {
-        count = await Voucher.find({
-          key: categorykey,
-        }).countDocuments(); // counter page
-        total = Math.ceil(count / perpage);
-
-        voucher = await Voucher.find({ key: categorykey })
-          .skip(perpage * Page - perpage)
-          .limit(perpage);
-
-        return res.status(200).json({ data: voucher, totalPage: total });
+        res.status(500).json("is not id");
       }
     } catch (err) {
       res.status(500).json(err);

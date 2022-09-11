@@ -17,5 +17,6 @@ router
   .put(verifyToken, userController.updateUser);
 
 router.route("/password").put(verifyToken, userController.updatePassword);
+router.route("/find").get(verifyToken, userController.getUserbyID);
 
 module.exports = router;
