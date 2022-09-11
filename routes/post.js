@@ -9,8 +9,7 @@ router
   .post(verifyTokenAndAdmin, postController.createPost)
   .put(verifyTokenAndAdmin, postController.updatePost)
   .delete(verifyTokenAndAdmin, postController.deletePost);
-
-router.route("/find").get(postController.getPostbyID);
 router.route("/top").get(postController.getTopPost);
+router.route("/find").get(postController.getPostbyID);
 
 module.exports = router;
