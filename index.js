@@ -21,7 +21,8 @@ var io = require("socket.io")(server, {
 dotenv.config();
 
 var corsOptions = {
-  origin: "http://localhost:3000",
+  // "http://localhost:3000"
+  origin: "  https://vouchershop-client.vercel.app",
   optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
   credentials: true,
   exposedHeaders: "Authorization",
