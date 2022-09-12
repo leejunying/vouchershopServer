@@ -71,3 +71,5 @@ mongoose
 server.listen(process.env.PORT, () => {
   console.log(`Server now running on port ${process.env.PORT}`);
 });
+
+module.exports = server;
