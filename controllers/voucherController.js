@@ -181,6 +181,10 @@ const voucherController = {
         });
 
         count = filterarr.length;
+        filterarr = filterarr.filter((item, indx) => {
+          return indx < 10;
+        });
+
         total = Math.ceil(count / perpage);
 
         return res.status(200).json({ data: filterarr, totalPage: total });
